@@ -12,5 +12,5 @@
     "x64"
   ],
   "bin": "opentofu.exe",
-  "version": "v1.6.0-2"
+  "version": "v1.6.0-3"
 }
