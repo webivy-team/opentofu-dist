@@ -10,7 +10,7 @@ permissions: write-all
 
 env:
   OPENTOFU_VERSION: "1.6.0"
-  OPENTOFU_DIST_VERSION: "2"
+  OPENTOFU_DIST_VERSION: "3"
 
 jobs:
   package:
@@ -219,7 +219,7 @@ jobs:
           npm publish opentofu-dist-linux-x64-v*.tgz
           npm publish opentofu-dist-linux-arm64-v*.tgz
           npm publish opentofu-dist-darwin-x64-v*.tgz
-          npm publish opentofu-dist-win32-x64-v*.tgz
+          # npm publish opentofu-dist-win32-x64-v*.tgz
           npm publish opentofu-dist-darwin-arm64-v*.tgz
 
   push:
