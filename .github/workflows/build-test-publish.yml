@@ -265,4 +265,4 @@ jobs:
           # XXX: workaround for https://github.com/orgs/community/discussions/55820
           git config --global http.version HTTP/1.1
           git pull -r
-          git push https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git master
+          git push https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git main
