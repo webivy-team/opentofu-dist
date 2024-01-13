@@ -1,0 +1,16 @@
+{
+  "repository": "https://github.com/webivy-team/opentofu-dist",
+  "name": "opentofu-dist-win32-x64",
+  "license": "MIT",
+  "scripts": {
+    "pre-release": "version=$(cat ../opentofu-dist/package.json | jq -r '.version') && opentofuVersion=$(echo $version | sed -e 's/-[0-9]*$//g' | sed -e 's/^v//g') && jq '.version = \"'$version'\"' package.json > package.json.tmp && mv package.json.tmp package.json && curl -LO https://github.com/opentofu/opentofu/releases/download/v${opentofuVersion}/tofu_${opentofuVersion}_windows_amd64.zip && unzip -o -j tofu_*.zip tofu.exe && rm tofu_*.zip"
+  },
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "bin": "opentofu.exe",
+  "version": "v1.6.0-2"
+}

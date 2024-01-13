@@ -1,0 +1,268 @@
+name: Build, Test & Publish
+
+on:
+  push:
+    branches:
+      - 'master'
+      - 'main'
+
+permissions: write-all
+
+env:
+  OPENTOFU_VERSION: "1.6.0"
+  OPENTOFU_DIST_VERSION: "2"
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v3
+
+      - name: Pack packages
+        run: |
+          (cd ./npm/opentofu-dist && npm run pre-release && npm pack)
+          (cd ./npm/linux-arm64 && npm pack)
+          (cd ./npm/linux-x64 && npm pack)
+          (cd ./npm/darwin-arm64 && npm pack)
+          (cd ./npm/darwin-x64 && npm pack)
+          (cd ./npm/win32-x64 && npm pack)
+      - name: List all files
+        run: find
+
+      - name: Upload bundle darwin-arm64
+        uses: actions/upload-artifact@v3
+        with:
+          path: npm/darwin-arm64/opentofu-dist-darwin-arm64-*.tgz
+          name: opentofu-dist-darwin-arm64.tgz
+          if-no-files-found: error
+      - name: Upload bundle darwin-x64
+        uses: actions/upload-artifact@v3
+        with:
+          path: npm/darwin-x64/opentofu-dist-darwin-x64-*.tgz
+          name: opentofu-dist-darwin-x64.tgz
+          if-no-files-found: error
+      - name: Upload bundle win32-x64
+        uses: actions/upload-artifact@v3
+        with:
+          path: npm/win32-x64/opentofu-dist-win32-x64-*.tgz
+          name: opentofu-dist-win32-x64.tgz
+          if-no-files-found: error
+      - name: Upload bundle linux-x64
+        uses: actions/upload-artifact@v3
+        with:
+          path: npm/linux-x64/opentofu-dist-linux-x64-*.tgz
+          name: opentofu-dist-linux-x64.tgz
+          if-no-files-found: error
+      - name: Upload bundle linux-arm64
+        uses: actions/upload-artifact@v3
+        with:
+          path: npm/linux-arm64/opentofu-dist-linux-arm64-*.tgz
+          name: opentofu-dist-linux-arm64.tgz
+          if-no-files-found: error
+      - name: Upload bundle opentofu-dist
+        uses: actions/upload-artifact@v3
+        with:
+          path: npm/opentofu-dist/opentofu-dist-*.tgz
+          name: opentofu-dist.tgz
+          if-no-files-found: error
+
+  # test-linux-x64:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - package
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 20
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: opentofu-dist.tgz
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: opentofu-dist-linux-x64.tgz
+  #     - name: Run NPM Test
+  #       working-directory: ./tests
+  #       run: |
+  #         npm i ../opentofu-dist-*.tgz && npm test
+
+  # test-linux-arm64:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - package
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: opentofu-dist.tgz
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: opentofu-dist-linux-arm64.tgz
+  #     - name: Run testing
+  #       uses: uraimo/run-on-arch-action@v2
+  #       with:
+  #         arch: aarch64
+  #         distro: ubuntu22.04
+  #         run: |
+  #           apt update -q -y
+  #           apt install -q -y curl bash sudo
+  #           useradd -m otheruser
+  #           cp ./opentofu-dist-*.tgz tests/
+  #           chmod -R 777 tests
+  #           sudo -u otheruser bash -c 'curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash'
+  #           sudo -u otheruser bash -c '. ~/.profile && nvm install v20 && (cd tests && npm i ./opentofu-dist-*.tgz && npm test)'
+
+  # test-darwin-x64:
+  #   runs-on: macos-latest
+  #   needs:
+  #     - package
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 20
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: opentofu-dist.tgz
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: opentofu-dist-darwin-x64.tgz
+  #     - name: Run NPM Test
+  #       working-directory: ./tests
+  #       run: |
+  #         npm i ../opentofu-dist-*.tgz && npm test
+
+  # test-win32-x64:
+  #   runs-on: windows-latest
+  #   needs:
+  #     - package
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 20
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: opentofu-dist.tgz
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: opentofu-dist-win32-x64.tgz
+  #     - name: Run NPM Test
+  #       working-directory: ./tests
+  #       shell: bash
+  #       run: |
+  #         npm i ../opentofu-dist-*.tgz && npm test
+
+  # test-darwin-arm64:
+  #   runs-on: macos-latest-xlarge
+  #   needs:
+  #     - package
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 20
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: opentofu-dist.tgz
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: opentofu-dist-darwin-arm64.tgz
+  #     - name: Run NPM Test
+  #       working-directory: ./tests
+  #       run: |
+  #         npm i ../opentofu-dist-*.tgz && npm test
+
+  publish:
+    runs-on: ubuntu-latest
+    needs:
+      - package
+      # - test-linux-x64
+      # - test-linux-arm64
+      # - test-darwin-x64
+      # - test-win32-x64
+      # - test-darwin-arm64
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+      - uses: actions/download-artifact@v3
+        with:
+          name: opentofu-dist.tgz
+      - uses: actions/download-artifact@v3
+        with:
+          name: opentofu-dist-linux-x64.tgz
+      - uses: actions/download-artifact@v3
+        with:
+          name: opentofu-dist-linux-arm64.tgz
+      - uses: actions/download-artifact@v3
+        with:
+          name: opentofu-dist-darwin-x64.tgz
+      - uses: actions/download-artifact@v3
+        with:
+          name: opentofu-dist-win32-x64.tgz
+      - uses: actions/download-artifact@v3
+        with:
+          name: opentofu-dist-darwin-arm64.tgz
+      - name: Run NPM Publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish opentofu-dist-v*.tgz
+          npm publish opentofu-dist-linux-x64-v*.tgz
+          npm publish opentofu-dist-linux-arm64-v*.tgz
+          npm publish opentofu-dist-darwin-x64-v*.tgz
+          npm publish opentofu-dist-win32-x64-v*.tgz
+          npm publish opentofu-dist-darwin-arm64-v*.tgz
+
+  push:
+    needs:
+      - package
+      # - test-linux-x64
+      # - test-linux-arm64
+      # - test-darwin-x64
+      # - test-win32-x64
+      # - test-darwin-arm64
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v3
+
+      - name: Pack packages
+        run: |
+          (cd ./npm/opentofu-dist && npm run pre-release && npm pack)
+          (cd ./npm/linux-arm64 && npm pack)
+          (cd ./npm/linux-x64 && npm pack)
+          (cd ./npm/darwin-arm64 && npm pack)
+          (cd ./npm/darwin-x64 && npm pack)
+          (cd ./npm/win32-x64 && npm pack)
+
+      - name: Check if there are any changes
+        id: has_changes
+        run: |
+          git status || exit 1
+          test -n "$(git status --porcelain)" && result=yes || result=no
+          echo "result=$result" >> $GITHUB_OUTPUT
+
+      - name: Commit changes
+        if: steps.has_changes.outputs.result == 'yes'
+        run: |
+          git config --local user.email "github-actions@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add --all
+          git commit -m "Autobuild: Built from ${{ github.sha }}"
+
+      - name: Push changes back to origin
+        if: steps.has_changes.outputs.result == 'yes'
+        run: |
+          # XXX: workaround for https://github.com/orgs/community/discussions/55820
+          git config --global http.version HTTP/1.1
+          git pull -r
+          git push https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git master
