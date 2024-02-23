@@ -10,14 +10,14 @@ permissions: write-all
 
 env:
   OPENTOFU_VERSION: "1.6.2"
-  OPENTOFU_DIST_VERSION: "3"
+  OPENTOFU_DIST_VERSION: "4"
 
 jobs:
   package:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout master branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Pack packages
         run: |
@@ -31,37 +31,37 @@ jobs:
         run: find
 
       - name: Upload bundle darwin-arm64
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: npm/darwin-arm64/opentofu-dist-darwin-arm64-*.tgz
           name: opentofu-dist-darwin-arm64.tgz
           if-no-files-found: error
       - name: Upload bundle darwin-x64
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: npm/darwin-x64/opentofu-dist-darwin-x64-*.tgz
           name: opentofu-dist-darwin-x64.tgz
           if-no-files-found: error
       - name: Upload bundle win32-x64
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: npm/win32-x64/opentofu-dist-win32-x64-*.tgz
           name: opentofu-dist-win32-x64.tgz
           if-no-files-found: error
       - name: Upload bundle linux-x64
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: npm/linux-x64/opentofu-dist-linux-x64-*.tgz
           name: opentofu-dist-linux-x64.tgz
           if-no-files-found: error
       - name: Upload bundle linux-arm64
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: npm/linux-arm64/opentofu-dist-linux-arm64-*.tgz
           name: opentofu-dist-linux-arm64.tgz
           if-no-files-found: error
       - name: Upload bundle opentofu-dist
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: npm/opentofu-dist/opentofu-dist-*.tgz
           name: opentofu-dist.tgz
@@ -72,15 +72,15 @@ jobs:
   #   needs:
   #     - package
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
   #     - name: Setup Node.js
-  #       uses: actions/setup-node@v3
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 20
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/download-artifact@v4
   #       with:
   #         name: opentofu-dist.tgz
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/download-artifact@v4
   #       with:
   #         name: opentofu-dist-linux-x64.tgz
   #     - name: Run NPM Test
@@ -93,11 +93,11 @@ jobs:
   #   needs:
   #     - package
   #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/download-artifact@v4
   #       with:
   #         name: opentofu-dist.tgz
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/download-artifact@v4
   #       with:
   #         name: opentofu-dist-linux-arm64.tgz
   #     - name: Run testing
@@ -119,15 +119,15 @@ jobs:
   #   needs:
   #     - package
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
   #     - name: Setup Node.js
-  #       uses: actions/setup-node@v3
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 20
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/download-artifact@v4
   #       with:
   #         name: opentofu-dist.tgz
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/download-artifact@v4
   #       with:
   #         name: opentofu-dist-darwin-x64.tgz
   #     - name: Run NPM Test
@@ -140,15 +140,15 @@ jobs:
   #   needs:
   #     - package
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
   #     - name: Setup Node.js
-  #       uses: actions/setup-node@v3
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 20
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/download-artifact@v4
   #       with:
   #         name: opentofu-dist.tgz
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/download-artifact@v4
   #       with:
   #         name: opentofu-dist-win32-x64.tgz
   #     - name: Run NPM Test
@@ -162,15 +162,15 @@ jobs:
   #   needs:
   #     - package
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
   #     - name: Setup Node.js
-  #       uses: actions/setup-node@v3
+  #       uses: actions/setup-node@v4
   #       with:
   #         node-version: 20
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/download-artifact@v4
   #       with:
   #         name: opentofu-dist.tgz
-  #     - uses: actions/download-artifact@v3
+  #     - uses: actions/download-artifact@v4
   #       with:
   #         name: opentofu-dist-darwin-arm64.tgz
   #     - name: Run NPM Test
@@ -189,26 +189,26 @@ jobs:
       # - test-darwin-arm64
     steps:
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: opentofu-dist.tgz
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: opentofu-dist-linux-x64.tgz
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: opentofu-dist-linux-arm64.tgz
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: opentofu-dist-darwin-x64.tgz
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: opentofu-dist-win32-x64.tgz
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: opentofu-dist-darwin-arm64.tgz
       - name: Run NPM Publish
@@ -233,7 +233,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout master branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Pack packages
         run: |
