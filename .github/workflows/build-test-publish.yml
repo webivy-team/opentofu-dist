@@ -9,7 +9,7 @@ on:
 permissions: write-all
 
 env:
-  OPENTOFU_VERSION: "1.6.1"
+  OPENTOFU_VERSION: "1.6.2"
   OPENTOFU_DIST_VERSION: "3"
 
 jobs:
